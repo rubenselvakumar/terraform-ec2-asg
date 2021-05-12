@@ -6,5 +6,5 @@ variable "vpcid" {
 variable "prefix" {
   description = "name_prefix for prod"
   type        = string
-  default     = "web-app-prod-"
+  default     = "web-app-prod"
 }
