@@ -54,19 +54,14 @@ resource "aws_iam_role" "web_app_role" {
     })
   }
   inline_policy {
-    name = "Ec2TerminateInstance"
+    name = "APIGatewayAccess"
     policy = jsonencode({
       Version = "2012-10-17"
       Statement = [
         {
-          Action   = ["ec2:TerminateInstances"]
+          Action = ["apigateway:GET"]
           Effect   = "Allow"
           Resource = "*"
-          condition = {
-            test     = "StringEquals"
-            variable = "ec2:ResourceTag/Name"
-            values   = "${var.name_prefix}_asg"
-          }
         },
       ]
     })

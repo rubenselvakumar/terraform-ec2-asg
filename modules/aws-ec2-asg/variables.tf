@@ -19,11 +19,20 @@ variable "ingress_from_port" {
 variable "ingress_to_port" {
   description = "to port"
 }
+variable "ingress_port_elb" {
+  description = "elb port"
+}
+variable "ingress_port_ec2" {
+  description = "ec2 port"
+}
 variable "ingress_protocol" {
   description = "protocol"
 }
 variable "vpc_private_cidr" {
   description = "vpc private cidr blocks"
+}
+variable "vpc_public_cidr" {
+  description = "vpc public cidr blocks"
 }
 #------------------------------------------------------------------------------
 # AWS EC2 LAUNCH CONFIGURATION
@@ -73,6 +82,11 @@ variable "desired_capacity" {
   default     = 1
 }
 variable "load_balancers" {
+  description = "(Optional) A list of elastic load balancer names to add to the autoscaling group names. Only valid for classic load balancers. For ALBs, use target_group_arns instead."
+  type        = list(any)
+  default     = []
+}
+variable "target_group_arns" {
   description = "(Optional) A list of elastic load balancer names to add to the autoscaling group names. Only valid for classic load balancers. For ALBs, use target_group_arns instead."
   type        = list(any)
   default     = []

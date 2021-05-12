@@ -25,15 +25,15 @@ data "aws_subnet" "public" {
 }
 
 output "private_subnet_ids" {
-  value = [data.aws_subnet_ids.private.ids]
+  value = data.aws_subnet_ids.private.ids
 }
 
 output "public_subnet_ids" {
-  value = [data.aws_subnet_ids.public.ids]
+  value = data.aws_subnet_ids.public.ids
 }
 
 output "subnet_private_cidr_blocks" {
-  value = [for pricidr in data.aws_subnet.private : pricidr.cidr_block]
+  value = [for p in data.aws_subnet.private : p.cidr_block]
 }
 
 output "subnet_public_cidr_blocks" {

@@ -11,7 +11,7 @@ resource "aws_security_group" "ec2_sg" {
     from_port   = var.ingress_from_port
     to_port     = var.ingress_to_port
     protocol    = var.ingress_protocol
-    cidr_blocks = [var.vpc_private_cidr]
+    cidr_blocks = var.vpc_public_cidr
   }
 
   egress {
@@ -32,8 +32,8 @@ resource "aws_security_group" "ec2_sg" {
 #------------------------------------------------------------------------------
 resource "aws_security_group_rule" "elbtoec2" {
   type                     = "ingress"
-  from_port                = var.ingress_from_port
-  to_port                  = var.ingress_to_port
+  from_port                = var.ingress_port_ec2
+  to_port                  = var.ingress_port_ec2
   protocol                 = var.ingress_protocol
   security_group_id        = aws_security_group.ec2_sg.id
   source_security_group_id = var.elb_sg_id
@@ -47,7 +47,7 @@ resource "aws_launch_configuration" "lc" {
   instance_type        = var.instance_type
   iam_instance_profile = aws_iam_instance_profile.webapp_instance_profile.arn
   key_name             = var.key_name
-  security_groups      = ["${aws_security_group.ec2_sg.id}"]
+  security_groups      = [aws_security_group.ec2_sg.id]
   user_data_base64     = var.user_data_base64
 }
 
@@ -56,11 +56,12 @@ resource "aws_launch_configuration" "lc" {
 #------------------------------------------------------------------------------
 resource "aws_autoscaling_group" "asg" {
   depends_on            = [aws_launch_configuration.lc]
-  name                  = "${var.name_prefix}_asg"
+  name                  = "${var.name_prefix}asg"
   max_size              = var.max_size
   min_size              = var.min_size
+  desired_capacity      = var.min_size
+  force_delete          = true
   launch_configuration  = aws_launch_configuration.lc.name
-  desired_capacity      = var.desired_capacity
   load_balancers        = var.load_balancers
   vpc_zone_identifier   = var.vpc_zone_identifier
   termination_policies  = var.termination_policies
@@ -69,7 +70,7 @@ resource "aws_autoscaling_group" "asg" {
   tags = [
     {
       key                 = "Name"
-      value               = "${var.name_prefix}_asg"
+      value               = "${var.name_prefix}asg"
       propagate_at_launch = true
     },
   ]

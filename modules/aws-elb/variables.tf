@@ -10,6 +10,9 @@ variable "ingress_to_port" {
 variable "ingress_protocol" {
   description = "Ingress Protocol"
 }
+variable "ingress_port_elb" {
+  description = "elb Ingress Port"
+}
 variable "natgwip_az1" {
   description = "nat gateway az1 ip"
 }
@@ -22,4 +25,5 @@ variable "natgwip_az3" {
 variable "subnets" {
   description = "A list of subnet cidr blocks."
   type        = list(any)
+  default = []
 }
